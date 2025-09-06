@@ -7,6 +7,12 @@ import { app } from '../../lib/firebase';
 import { useRouter } from 'next/navigation';
 import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 
+interface User {
+  id: string;
+  balance: number;
+  taps?: number;
+}
+
 export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -55,7 +61,7 @@ export default function AdminPage() {
 
       const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'));
       const usersSnapshot = await getDocs(usersQuery);
-      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const users: User[] = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
 
       // Placeholder for tap calculation in the last 24h
       const totalTapsLast24h = users.reduce((acc, user) => acc + (user.taps || 1), 0); 

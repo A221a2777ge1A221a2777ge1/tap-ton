@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { getTelegramUser } from '@/lib/telegram';
 import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 
 export default function TapPage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [taps, setTaps] = useState(0);
   const [balance, setBalance] = useState(0);
   const [tonConnectUI] = useTonConnectUI();
@@ -40,7 +40,7 @@ export default function TapPage() {
           }
         }
 
-        if (tonConnectUI.wallet) {
+        if (tonConnectUI && tonConnectUI.wallet) {
           updateDoc(userRef, { wallet: tonConnectUI.wallet.account.address });
         }
 
@@ -50,7 +50,7 @@ export default function TapPage() {
     });
 
     return () => unsubscribe();
-  }, [tonConnectUI.wallet]);
+  }, [tonConnectUI]);
 
   return (
     <div>
