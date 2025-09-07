@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #06070b;
+  --foreground: #e8eaf6;
+  --grid: rgba(255,255,255,0.06);
+  --glow-1: #7c4dff55;
+  --glow-2: #00e5ff44;
 }
 
 @theme inline {
@@ -12,26 +15,35 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@media (prefers-color-scheme: light) {
+  :root { --background: #0a0d14; --foreground: #f2f6ff; }
+}
+
+html, body {
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(1000px 600px at 20% -20%, var(--glow-1), transparent 60%),
+              radial-gradient(800px 500px at 120% 20%, var(--glow-2), transparent 60%),
+              var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Subtle animated grid */
+.web3-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  mask-image: radial-gradient(circle at 50% 30%, black, transparent 70%);
+  pointer-events: none;
 }
 
 /* TON Connect Button Styling */
-.ton-connect-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+.ton-connect-wrapper { display: flex; align-items: center; justify-content: center; }
 .ton-connect-wrapper button {
   background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%) !important;
   border: none !important;
@@ -42,12 +54,5 @@ body {
   transition: all 0.3s ease !important;
   box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3) !important;
 }
-
-.ton-connect-wrapper button:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4) !important;
-}
-
-.ton-connect-wrapper button:active {
-  transform: translateY(0) !important;
-}
+.ton-connect-wrapper button:hover { transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4) !important; }
+.ton-connect-wrapper button:active { transform: translateY(0) !important; }

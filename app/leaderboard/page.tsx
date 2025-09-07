@@ -98,25 +98,17 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700">
-      {/* African Pattern Background */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-black rounded-full"></div>
-        <div className="absolute bottom-32 left-40 w-28 h-28 bg-white rounded-full"></div>
-        <div className="absolute bottom-20 right-20 w-20 h-20 bg-black rounded-full"></div>
-      </div>
-
+    <div className="relative">
       <div className="relative z-10 container mx-auto p-4">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-white drop-shadow-lg mb-4">
             🏆 African Tycoon Leaderboard
           </h1>
-          <p className="text-blue-100 text-xl">
+          <p className="text-white/80 text-xl">
             Top 300 African investors competing for TON rewards
           </p>
-          <div className="bg-yellow-500/20 backdrop-blur-sm rounded-xl p-4 mt-6 border border-yellow-400/30 max-w-2xl mx-auto">
-            <p className="text-yellow-100 font-semibold">
+          <div className="bg-yellow-500/10 rounded-xl p-4 mt-6 border border-yellow-400/30 max-w-2xl mx-auto">
+            <p className="text-yellow-100 font-medium">
               🎯 Only the top 50 players with connected TON wallets qualify for real cryptocurrency payments!
             </p>
           </div>
@@ -129,11 +121,11 @@ export default function Leaderboard() {
           </div>
         ) : (
           <div className="max-w-6xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead>
-                    <tr className="border-b border-white/20">
+                    <tr className="border-b border-white/10">
                       <th className="py-4 px-6 text-left text-white font-bold">Rank</th>
                       <th className="py-4 px-6 text-left text-white font-bold">Tycoon</th>
                       <th className="py-4 px-6 text-right text-white font-bold">CT Balance</th>
@@ -160,7 +152,7 @@ export default function Leaderboard() {
                           </td>
                           <td className="py-4 px-6">
                             <div className="text-white font-semibold text-lg">{user.displayName}</div>
-                            <div className="text-blue-200 text-sm">{user.taps?.toLocaleString()} taps</div>
+                            <div className="text-white/70 text-sm">{user.taps?.toLocaleString()} taps</div>
                           </td>
                           <td className="py-4 px-6 text-right">
                             <div className="text-white font-bold text-lg">{formatNumber(user.balance)} CT</div>
@@ -186,17 +178,17 @@ export default function Leaderboard() {
 
             {/* Stats Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10 text-center">
                 <div className="text-3xl font-bold text-white">300</div>
-                <div className="text-blue-100">Total Players</div>
+                <div className="text-white/70">Total Players</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10 text-center">
                 <div className="text-3xl font-bold text-white">50</div>
-                <div className="text-blue-100">TON Qualified</div>
+                <div className="text-white/70">TON Qualified</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10 text-center">
                 <div className="text-3xl font-bold text-white">24/7</div>
-                <div className="text-blue-100">Competition</div>
+                <div className="text-white/70">Competition</div>
               </div>
             </div>
           </div>
