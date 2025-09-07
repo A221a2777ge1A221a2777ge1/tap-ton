@@ -24,7 +24,6 @@ const updatePayoutPool = async (amount: number) => {
 
 
 export default function AdminPage() {
-  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [totalUsers, setTotalUsers] = useState(0);
   const [topInvestors, setTopInvestors] = useState<Investor[]>([]);
@@ -38,6 +37,13 @@ export default function AdminPage() {
     displayName: string;
     balance: number;
     walletAddress: string;
+  }
+  
+  // Define Payout interface
+  interface Payout {
+      name: string;
+      wallet: string;
+      payout: string;
   }
   
   const formatNumber = (num: number) => {
@@ -54,7 +60,6 @@ export default function AdminPage() {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUser(user);
         const adminUID = process.env.NEXT_PUBLIC_ADMIN_UID;
         if (user.uid === adminUID) {
           setIsAdmin(true);
@@ -125,7 +130,7 @@ export default function AdminPage() {
     console.log(`Payout Pool: ${payoutPool} TON`);
     console.log("Calculating individual payouts...");
 
-    const payouts = [];
+    const payouts: Payout[] = [];
     investorsSnapshot.forEach(doc => {
       const userData = doc.data();
       const userInvestment = userData.balance;

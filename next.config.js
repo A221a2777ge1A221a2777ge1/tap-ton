@@ -11,23 +11,6 @@ const nextConfig = {
     return config;
   },
   transpilePackages: ['@tonconnect/ui-react'],
-  async headers() {
-    return [
-      {
-        source: '/tonconnect-manifest.json',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json',
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-        ],
-      },
-    ];
-  },
 };
 
 module.exports = nextConfig;
