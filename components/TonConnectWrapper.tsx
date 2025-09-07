@@ -6,10 +6,26 @@ import { useEffect, useState } from 'react';
 export function TonConnectWrapper() {
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tonConnectUI] = useTonConnectUI();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (tonConnectUI) {
+      const unsubscribe = tonConnectUI.onStatusChange(() => {
+        // Handle wallet status change if needed
+      }, (err) => {
+        console.error('TON Connect Error:', err);
+        setError((err as Error).message);
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [tonConnectUI]);
 
   if (!mounted) {
     return (
@@ -27,12 +43,7 @@ export function TonConnectWrapper() {
 
   return (
     <div className="ton-connect-wrapper">
-      <TonConnectButton 
-        onError={(error) => {
-          console.error('TON Connect Error:', error);
-          setError(error.message);
-        }}
-      />
+      <TonConnectButton />
     </div>
   );
 }
@@ -40,7 +51,8 @@ export function TonConnectWrapper() {
 export function useTonConnect() {
   const [mounted, setMounted] = useState(false);
   const [tonConnectUI] = useTonConnectUI();
-  const { wallet, connected } = useTonWallet();
+  const wallet = useTonWallet();
+  const connected = !!wallet;
 
   useEffect(() => {
     setMounted(true);

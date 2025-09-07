@@ -4,7 +4,7 @@ import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWra
 import { useEffect, useState } from 'react';
 
 export default function TestTonPage() {
-  const { wallet, connected, tonConnectUI } = useTonConnect();
+  const { wallet, connected } = useTonConnect();
   const [logs, setLogs] = useState<string[]>([]);
 
   const addLog = (message: string) => {

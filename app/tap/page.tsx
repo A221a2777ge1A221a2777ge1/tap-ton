@@ -12,7 +12,6 @@ export default function TapPage() {
   const [taps, setTaps] = useState(0);
   const [balance, setBalance] = useState(0);
   const [passiveIncome, setPassiveIncome] = useState(0);
-  const [isQualified, setIsQualified] = useState(false);
   const { tonConnectUI, wallet, connected } = useTonConnect();
 
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function TapPage() {
           setTaps(userData.taps || 0);
           setBalance(userData.balance || 0);
           setPassiveIncome(userData.passiveIncome || 0);
-          setIsQualified(userData.isQualified || false);
         } else {
           const tgUser = getTelegramUser();
           if (tgUser) {
@@ -60,7 +58,7 @@ export default function TapPage() {
     });
 
     return () => unsubscribe();
-  }, [tonConnectUI]);
+  }, [connected, wallet]);
 
   const handleTap = async () => {
     if (!user) return;
@@ -111,7 +109,7 @@ export default function TapPage() {
                 Welcome, {getTelegramUser()?.first_name || 'Tycoon'}! 👑
               </h2>
               <p className="text-yellow-100">
-                {tonConnectUI.wallet ? 
+                {tonConnectUI && tonConnectUI.wallet ? 
                   "🎉 Your TON wallet is connected! You're eligible for real cryptocurrency rewards!" :
                   "Connect your TON wallet to qualify for real TON payments from the super admin!"
                 }

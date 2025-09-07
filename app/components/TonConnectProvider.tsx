@@ -1,6 +1,6 @@
 'use client';
 
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { TonConnectUIProvider, THEME } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 
 export function TonConnectProvider({ children }: { children: React.ReactNode }) {
@@ -10,13 +10,12 @@ export function TonConnectProvider({ children }: { children: React.ReactNode }) 
     setMounted(true);
   }, []);
 
+  // Return null on the server and during the initial client-side render
   if (!mounted) {
-    return <>{children}</>;
+    return null;
   }
 
-  const manifestUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/tonconnect-manifest.json`
-    : '/tonconnect-manifest.json';
+  const manifestUrl = `${window.location.origin}/tonconnect-manifest.json`;
 
   return (
     <TonConnectUIProvider 
@@ -25,7 +24,7 @@ export function TonConnectProvider({ children }: { children: React.ReactNode }) 
         twaReturnUrl: 'https://t.me/crypto_tycoon_bot'
       }}
       uiPreferences={{
-        theme: 'DARK',
+        theme: THEME.DARK,
         borderRadius: 's'
       }}
       walletsListConfiguration={{
