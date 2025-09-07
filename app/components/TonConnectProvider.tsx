@@ -1,28 +1,19 @@
 'use client';
 
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
-import { useEffect, useState } from 'react';
 
 export function TonConnectProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   const manifestUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/tonconnect-manifest.json`
-    : '/tonconnect-manifest.json';
+    ? `${window.location.origin}/api/tonconnect/manifest`
+    : '/api/tonconnect/manifest';
+
+  const twaReturnUrl = process.env.NEXT_PUBLIC_TWA_BOT_URL || 'https://t.me/crypto_tycoon_bot';
 
   return (
     <TonConnectUIProvider 
       manifestUrl={manifestUrl}
       actionsConfiguration={{
-        twaReturnUrl: 'https://t.me/crypto_tycoon_bot'
+        twaReturnUrl
       }}
       uiPreferences={{
         theme: 'DARK',

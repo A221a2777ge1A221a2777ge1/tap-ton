@@ -8,7 +8,7 @@ export default function TestTonPage() {
   const [logs, setLogs] = useState<string[]>([]);
 
   const addLog = (message: string) => {
-    setLogs(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    setLogs((prev: string[]) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   };
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function TestTonPage() {
         <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Debug Logs</h2>
           <div className="bg-black/50 rounded-lg p-4 max-h-64 overflow-y-auto">
-            {logs.map((log, index) => (
+            {logs.map((log: string, index: number) => (
               <div key={index} className="text-green-400 text-sm font-mono">
                 {log}
               </div>

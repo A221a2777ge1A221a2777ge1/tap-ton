@@ -1,8 +1,9 @@
 
 {
-  "url": "http://localhost:3000",
-  "name": "Crypto Tycoon - African Investment Empire",
-  "iconUrl": "http://localhost:3000/icon.svg",
-  "termsOfUseUrl": "http://localhost:3000/terms",
-  "privacyPolicyUrl": "http://localhost:3000/privacy"
+  "_note": "This static file is unused. Manifest is served dynamically at /api/tonconnect/manifest.",
+  "url": "",
+  "name": "",
+  "iconUrl": "",
+  "termsOfUseUrl": "",
+  "privacyPolicyUrl": ""
 }
