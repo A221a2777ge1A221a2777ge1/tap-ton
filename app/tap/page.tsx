@@ -13,7 +13,7 @@ export default function TapPage() {
   const [balance, setBalance] = useState(0);
   const [passiveIncome, setPassiveIncome] = useState(0);
   const [isQualified, setIsQualified] = useState(false);
-  const { tonConnectUI, wallet } = useTonConnect();
+  const { tonConnectUI, wallet, connected } = useTonConnect();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -47,7 +47,7 @@ export default function TapPage() {
           }
         }
 
-        if (wallet) {
+        if (connected && wallet) {
           updateDoc(userRef, {
             wallet: wallet.account.address,
             walletConnected: true
@@ -156,21 +156,21 @@ export default function TapPage() {
 
             {/* Qualification Status */}
             <div className={`rounded-xl p-6 mb-8 border-2 ${
-              wallet ? 
+              connected && wallet ? 
                 'bg-green-500/20 border-green-400' : 
                 'bg-yellow-500/20 border-yellow-400'
             }`}>
               <div className="flex items-center gap-4">
                 <div className="text-4xl">
-                  {wallet ? '✅' : '⚠️'}
+                  {connected && wallet ? '✅' : '⚠️'}
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-white">
-                    {wallet ? 'TON Wallet Connected!' : 'Connect TON Wallet'}
+                    {connected && wallet ? 'TON Wallet Connected!' : 'Connect TON Wallet'}
                   </h4>
                   <p className="text-yellow-100">
-                    {wallet ? 
-                      'You qualify for real TON payments from the super admin!' :
+                    {connected && wallet ? 
+                      `You qualify for real TON payments! Address: ${wallet.account.address.slice(0, 8)}...${wallet.account.address.slice(-8)}` :
                       'Connect your TON wallet to qualify for real cryptocurrency rewards!'
                     }
                   </p>

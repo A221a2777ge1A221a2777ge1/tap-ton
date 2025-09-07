@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 export function TonConnectWrapper() {
   const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -16,9 +17,22 @@ export function TonConnectWrapper() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
+        Connection Error
+      </div>
+    );
+  }
+
   return (
     <div className="ton-connect-wrapper">
-      <TonConnectButton />
+      <TonConnectButton 
+        onError={(error) => {
+          console.error('TON Connect Error:', error);
+          setError(error.message);
+        }}
+      />
     </div>
   );
 }
@@ -26,15 +40,15 @@ export function TonConnectWrapper() {
 export function useTonConnect() {
   const [mounted, setMounted] = useState(false);
   const [tonConnectUI] = useTonConnectUI();
-  const { wallet } = useTonWallet();
+  const { wallet, connected } = useTonWallet();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return { tonConnectUI: null, wallet: null };
+    return { tonConnectUI: null, wallet: null, connected: false };
   }
 
-  return { tonConnectUI, wallet };
+  return { tonConnectUI, wallet, connected };
 }

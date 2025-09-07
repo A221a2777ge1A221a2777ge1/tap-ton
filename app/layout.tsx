@@ -30,6 +30,7 @@ export default function RootLayout({
           <Link href="/tap" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👆 Tap</Link>
           <Link href="/leaderboard" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🏆 Leaderboard</Link>
           <Link href="/admin" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👑 Admin</Link>
+          <Link href="/test-ton" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🔧 Test TON</Link>
         </nav>
         {children}
       </TonConnectProvider>
