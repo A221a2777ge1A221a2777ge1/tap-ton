@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, getDocs, writeBatch, limit } from 'firebase/firestore';
 import { app } from '../../lib/firebase';
 import { useRouter } from 'next/navigation';
-import { TonConnectWrapper, useTonConnect } from '../components/TonConnectWrapper';
+import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWrapper';
 
 interface User {
   id: string;

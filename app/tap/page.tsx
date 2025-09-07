@@ -5,7 +5,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/a
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { getTelegramUser } from '@/lib/telegram';
-import { TonConnectWrapper, useTonConnect } from '../components/TonConnectWrapper';
+import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWrapper';
 
 export default function TapPage() {
   const [user, setUser] = useState<User | null>(null);
