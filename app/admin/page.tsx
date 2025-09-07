@@ -27,7 +27,7 @@ export default function AdminPage() {
   const router = useRouter();
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const { tonConnectUI } = useTonConnect();
+  const { tonConnectUI, wallet } = useTonConnect();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -174,10 +174,10 @@ export default function AdminPage() {
           <TonConnectWrapper />
         </div>
 
-        {tonConnectUI.wallet && (
+        {wallet && (
           <div className="bg-green-500/20 backdrop-blur-sm rounded-xl p-4 mb-8 border border-green-400/30">
             <p className="text-green-100 text-center">
-              ✅ Connected wallet: {tonConnectUI.wallet.account.address.slice(0, 12)}...{tonConnectUI.wallet.account.address.slice(-8)}
+              ✅ Connected wallet: {wallet.account.address.slice(0, 12)}...{wallet.account.address.slice(-8)}
             </p>
           </div>
         )}

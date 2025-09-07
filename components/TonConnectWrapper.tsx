@@ -1,6 +1,6 @@
 'use client';
 
-import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
+import { TonConnectButton, useTonConnectUI, useTonWallet } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 
 export function TonConnectWrapper() {
@@ -16,20 +16,25 @@ export function TonConnectWrapper() {
     );
   }
 
-  return <TonConnectButton />;
+  return (
+    <div className="ton-connect-wrapper">
+      <TonConnectButton />
+    </div>
+  );
 }
 
 export function useTonConnect() {
   const [mounted, setMounted] = useState(false);
   const [tonConnectUI] = useTonConnectUI();
+  const { wallet } = useTonWallet();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return { tonConnectUI: null };
+    return { tonConnectUI: null, wallet: null };
   }
 
-  return { tonConnectUI };
+  return { tonConnectUI, wallet };
 }
