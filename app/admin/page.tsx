@@ -30,7 +30,7 @@ export default function AdminPage() {
   const { tonConnectUI, wallet, connected } = useTonConnect();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
       if (user) {
         const adminRef = doc(db, 'admins', user.uid);
         const adminSnap = await getDoc(adminRef);
@@ -52,7 +52,7 @@ export default function AdminPage() {
     try {
       const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'), limit(50));
       const usersSnapshot = await getDocs(usersQuery);
-      const users: User[] = usersSnapshot.docs.map(doc => ({ 
+      const users: User[] = usersSnapshot.docs.map((doc: any) => ({ 
         id: doc.id, 
         ...doc.data() 
       } as User));
@@ -85,7 +85,7 @@ export default function AdminPage() {
 
       const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'));
       const usersSnapshot = await getDocs(usersQuery);
-      const users: User[] = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+      const users: User[] = usersSnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as User));
 
       const totalTapsLast24h = users.reduce((acc, user) => acc + (user.taps || 1), 0); 
 

@@ -7,11 +7,13 @@ export function TonConnectProvider({ children }: { children: React.ReactNode }) 
     ? `${window.location.origin}/api/tonconnect/manifest`
     : '/api/tonconnect/manifest';
 
+  const twaReturnUrl = process.env.NEXT_PUBLIC_TWA_BOT_URL || 'https://t.me/crypto_tycoon_bot';
+
   return (
     <TonConnectUIProvider 
       manifestUrl={manifestUrl}
       actionsConfiguration={{
-        twaReturnUrl: 'https://t.me/crypto_tycoon_bot'
+        twaReturnUrl
       }}
       uiPreferences={{
         theme: 'DARK',

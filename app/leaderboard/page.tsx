@@ -59,31 +59,42 @@ export default function Leaderboard() {
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      const db = getFirestore(app);
-      const usersCol = collection(db, 'users');
-      const q = query(usersCol, orderBy('balance', 'desc'), limit(300));
-      const usersSnapshot = await getDocs(q);
-      
-      // If we have real users, use them, otherwise generate mock data
-      if (usersSnapshot.docs.length > 0) {
-        const leaderboardData = usersSnapshot.docs.map(doc => ({
-          uid: doc.id,
-          ...doc.data()
-        })) as LeaderboardEntry[];
-        setLeaderboard(leaderboardData);
-      } else {
-        // Generate mock leaderboard data
+      try {
+        const db = getFirestore(app);
+        const usersCol = collection(db, 'users');
+        const q = query(usersCol, orderBy('balance', 'desc'), limit(300));
+        const usersSnapshot = await getDocs(q);
+
+        if (usersSnapshot.docs.length > 0) {
+          const leaderboardData = usersSnapshot.docs.map((doc: any) => ({
+            uid: doc.id,
+            ...doc.data()
+          })) as LeaderboardEntry[];
+          setLeaderboard(leaderboardData);
+        } else {
+          const names = generateAfricanNames();
+          const mockData = names.map((name, index) => ({
+            uid: `mock_${index}`,
+            displayName: name,
+            balance: Math.max(200000000 - (index * 500000) + Math.floor(Math.random() * 100000), 1000000),
+            walletConnected: index < 50,
+            taps: Math.floor(Math.random() * 10000) + 1000
+          }));
+          setLeaderboard(mockData);
+        }
+      } catch (error) {
         const names = generateAfricanNames();
         const mockData = names.map((name, index) => ({
           uid: `mock_${index}`,
           displayName: name,
           balance: Math.max(200000000 - (index * 500000) + Math.floor(Math.random() * 100000), 1000000),
-          walletConnected: index < 50, // Top 50 have connected wallets
+          walletConnected: index < 50,
           taps: Math.floor(Math.random() * 10000) + 1000
         }));
         setLeaderboard(mockData);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchLeaderboard();

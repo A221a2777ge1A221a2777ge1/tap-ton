@@ -1,33 +1,19 @@
 {
-  "hosting": {
-    "public": "out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
+  "hosting": [{
+    "source": ".",
+    "frameworksBackend": {
+      "region": "us-central1"
+    },
     "headers": [
       {
         "source": "/tonconnect-manifest.json",
         "headers": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-          }
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
       }
     ]
-  },
+  }],
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"

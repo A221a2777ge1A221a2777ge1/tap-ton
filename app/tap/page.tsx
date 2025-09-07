@@ -19,14 +19,14 @@ export default function TapPage() {
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user: any) => {
       if (user) {
         setUser(user);
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          const userData = userSnap.data();
+          const userData: any = userSnap.data();
           setTaps(userData.taps || 0);
           setBalance(userData.balance || 0);
           setPassiveIncome(userData.passiveIncome || 0);
