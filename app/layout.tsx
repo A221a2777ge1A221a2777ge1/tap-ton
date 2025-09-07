@@ -1,38 +1,40 @@
-import { Geist, Geist_Mono } from "next/font/google";
+
+import type { Metadata } from "next";
+import { PT_Sans } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
-import { TonConnectProvider } from "./components/TonConnectProvider";
+import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/lib/auth";
+import { Toaster } from "@/components/ui/toaster";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const ptSans = PT_Sans({
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+export const metadata: Metadata = {
+  title: "Evana Tycoon",
+  description: "Your African Empire Awaits",
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
-      >
-      <TonConnectProvider>
-        <nav className="flex justify-center my-4 bg-gray-800/50 backdrop-blur-sm border border-purple-500/30 rounded-full p-2 mx-4">
-          <Link href="/" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🏠 Home</Link>
-          <Link href="/tap" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">👆 Tap</Link>
-          <Link href="/leaderboard" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🏆 Leaderboard</Link>
-          <Link href="/admin" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">👑 Admin</Link>
-          <Link href="/test-ton" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🔧 Test TON</Link>
-        </nav>
-        {children}
-      </TonConnectProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={ptSans.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <main className="container mx-auto p-4 max-w-4xl">{children}</main>
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
