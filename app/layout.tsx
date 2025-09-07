@@ -1,39 +1,31 @@
-
-import type { Metadata } from "next";
-import { PT_Sans } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "@/lib/auth";
-import { Toaster } from "@/components/ui/toaster";
+import TonProvider from "@/app/components/ton-provider";
 
-const ptSans = PT_Sans({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Evana Tycoon",
-  description: "Your African Empire Awaits",
+  title: "Tap Ton",
+  description: "Tap to earn",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={ptSans.className}>
+    <html lang="en">
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <main className="container mx-auto p-4 max-w-4xl">{children}</main>
-            <Toaster />
-          </AuthProvider>
+          <TonProvider>{children}</TonProvider>
         </ThemeProvider>
       </body>
     </html>

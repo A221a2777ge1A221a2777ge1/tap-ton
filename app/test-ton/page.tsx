@@ -1,10 +1,10 @@
 'use client';
 
-import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWrapper';
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 
 export default function TestTonPage() {
-  const { wallet, connected } = useTonConnect();
+  const [tonConnectUI] = useTonConnectUI();
   const [logs, setLogs] = useState<string[]>([]);
 
   const addLog = (message: string) => {
@@ -13,18 +13,22 @@ export default function TestTonPage() {
 
   useEffect(() => {
     addLog('Page loaded');
-    if (connected) {
+    if (tonConnectUI?.connected) {
       addLog('Wallet connected');
     } else {
       addLog('Wallet not connected');
     }
-  }, [connected]);
+  }, [tonConnectUI?.connected]);
 
   useEffect(() => {
-    if (wallet) {
-      addLog(`Wallet address: ${wallet.account.address}`);
+    if (tonConnectUI?.wallet) {
+      addLog(`Wallet address: ${tonConnectUI.wallet.account.address}`);
     }
-  }, [wallet]);
+  }, [tonConnectUI?.wallet]);
+
+  const connected = tonConnectUI?.connected;
+  const walletAddress = tonConnectUI?.wallet?.account.address;
+  const walletChain = tonConnectUI?.wallet?.account.chain;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-8">
@@ -45,13 +49,13 @@ export default function TestTonPage() {
             <p className="text-white">
               <span className="font-semibold">Wallet:</span> 
               <span className="ml-2 font-mono text-sm">
-                {wallet ? wallet.account.address : 'None'}
+                {walletAddress || 'None'}
               </span>
             </p>
             <p className="text-white">
               <span className="font-semibold">Chain:</span> 
               <span className="ml-2">
-                {wallet ? wallet.account.chain : 'None'}
+                {walletChain || 'None'}
               </span>
             </p>
           </div>
@@ -60,7 +64,7 @@ export default function TestTonPage() {
         <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-6">
           <h2 className="text-2xl font-bold text-white mb-4">TON Connect Button</h2>
           <div className="flex justify-center">
-            <TonConnectWrapper />
+            <TonConnectButton />
           </div>
         </div>
 

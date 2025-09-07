@@ -1,17 +1,17 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const { https } = require('firebase-functions');
+const { default: next } = require('next');
 
-admin.initializeApp();
+const isDev = process.env.NODE_ENV !== 'production';
 
-// A simple 'hello world' function to verify setup
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Evana Tycoon Firebase Cloud Functions!");
+const server = next({
+  dev: isDev,
+  //location of .next folder
+  conf: { distDir: '.next' },
 });
 
-/**
- * TODO: Implement the secure executePayouts function.
- * This function will be triggered by a secure call from the admin panel.
- * It will read all user balances, calculate proportional payouts, and then
- * use a TON SDK with a securely stored private key to send the TON coin.
- */
+const nextjsHandle = server.getRequestHandler();
+exports.nextServer = https.onRequest((req, res) => {
+  return server.prepare().then(() => {
+    return nextjsHandle(req, res);
+  });
+});
