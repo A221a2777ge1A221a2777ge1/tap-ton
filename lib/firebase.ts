@@ -1,16 +1,19 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
+// Replace with your actual Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBPxgbabl4DnDIXJ7LC1dOpBnRUvWUPFQs",
-  authDomain: "tonup-t0iem.firebaseapp.com",
-  projectId: "tonup-t0iem",
-  storageBucket: "tonup-t0iem.firebasestorage.app",
-  messagingSenderId: "681495947781",
-  appId: "1:681495947781:web:b99f47aec8cbc228d74a6c"
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
 };
 
-export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+export { auth, db, app };

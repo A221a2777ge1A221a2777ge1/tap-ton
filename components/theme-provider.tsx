@@ -1,9 +1,8 @@
-'''
 "use client";
 
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { ThemeProvider as NextThemesProvider, useTheme, type ThemeProviderProps } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { 
@@ -13,8 +12,8 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 
-export function ThemeProvider({ children, ...props }: any) {
-  return <div {...props}>{children}</div>;
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
 
 export function ThemeToggle() {
@@ -43,4 +42,3 @@ export function ThemeToggle() {
     </DropdownMenu>
   );
 }
-'''
