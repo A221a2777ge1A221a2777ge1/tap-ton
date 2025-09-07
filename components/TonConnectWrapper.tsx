@@ -28,7 +28,7 @@ export function TonConnectWrapper() {
   return (
     <div className="ton-connect-wrapper">
       <TonConnectButton 
-        onError={(error) => {
+        onError={(error: Error) => {
           console.error('TON Connect Error:', error);
           setError(error.message);
         }}
