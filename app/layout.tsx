@@ -21,15 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
       >
       <TonConnectProvider>
-        <nav className="flex justify-center my-4 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full p-2 mx-4">
-          <Link href="/" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🏠 Home</Link>
-          <Link href="/tap" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👆 Tap</Link>
-          <Link href="/leaderboard" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🏆 Leaderboard</Link>
-          <Link href="/admin" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👑 Admin</Link>
-          <Link href="/test-ton" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🔧 Test TON</Link>
+        <nav className="flex justify-center my-4 bg-gray-800/50 backdrop-blur-sm border border-purple-500/30 rounded-full p-2 mx-4">
+          <Link href="/" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🏠 Home</Link>
+          <Link href="/tap" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">👆 Tap</Link>
+          <Link href="/leaderboard" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🏆 Leaderboard</Link>
+          <Link href="/admin" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">👑 Admin</Link>
+          <Link href="/test-ton" className="mx-2 px-4 py-2 rounded-full text-gray-300 hover:bg-purple-600/50 hover:text-white transition-colors font-semibold">🔧 Test TON</Link>
         </nav>
         {children}
       </TonConnectProvider>

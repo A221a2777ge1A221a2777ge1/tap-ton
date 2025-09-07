@@ -1,328 +1,232 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, getDocs, writeBatch, limit } from 'firebase/firestore';
-import { app } from '../../lib/firebase';
-import { useRouter } from 'next/navigation';
-import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWrapper';
+import { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, getDocs, where } from 'firebase/firestore';
+import { app } from '@/lib/firebase';
 
-interface User {
-  id: string;
-  balance: number;
-  taps?: number;
-  displayName?: string;
-  walletConnected?: boolean;
-}
+// Mocking a fetch for payout pool from a backend/db
+const getPayoutPool = async () => {
+    // In a real app, this would fetch from Firestore or a secure backend
+    const poolDocRef = doc(getFirestore(app), 'admin', 'payoutPool');
+    const poolDoc = await getDoc(poolDocRef);
+    if (poolDoc.exists()) {
+        return poolDoc.data().balance || 0;
+    }
+    return 0;
+};
+
+const updatePayoutPool = async (amount: number) => {
+    // In a real app, this would update the value in Firestore
+    const poolDocRef = doc(getFirestore(app), 'admin', 'payoutPool');
+    await setDoc(poolDocRef, { balance: amount }, { merge: true });
+};
+
 
 export default function AdminPage() {
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [topInvestors, setTopInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [amountTON, setAmountTON] = useState(0);
-  const [notes, setNotes] = useState('');
-  const [period, setPeriod] = useState('daily');
-  const [qualifiedUsers, setQualifiedUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [individualAmount, setIndividualAmount] = useState(0);
-  const router = useRouter();
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const { tonConnectUI, wallet, connected } = useTonConnect();
+  const [payoutPool, setPayoutPool] = useState(0);
+  const [tonAmount, setTonAmount] = useState('');
 
-  const fetchQualifiedUsers = useCallback(async () => {
-    try {
-      const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'), limit(50));
-      const usersSnapshot = await getDocs(usersQuery);
-      const users: User[] = usersSnapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      } as User));
-      
-      const qualified = users.filter(user => user.walletConnected);
-      setQualifiedUsers(qualified);
-    } catch (error) {
-      console.error('Error fetching qualified users:', error);
-    }
-  }, [db]);
+  // Define Investor interface
+  interface Investor {
+    id: string;
+    displayName: string;
+    balance: number;
+    walletAddress: string;
+  }
+  
+  const formatNumber = (num: number) => {
+    if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
+    if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
+    if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
+    if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
+    return new Intl.NumberFormat().format(num);
+  };
 
   useEffect(() => {
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const adminRef = doc(db, 'admins', user.uid);
-        const adminSnap = await getDoc(adminRef);
-        if (adminSnap.exists()) {
+        setUser(user);
+        const adminUID = process.env.NEXT_PUBLIC_ADMIN_UID;
+        if (user.uid === adminUID) {
           setIsAdmin(true);
-          fetchQualifiedUsers();
-        } else {
-          router.push('/');
+          // Fetch admin data
+          const usersCollection = collection(db, 'users');
+          const usersSnapshot = await getDocs(usersCollection);
+          setTotalUsers(usersSnapshot.size);
+
+          const fetchedPool = await getPayoutPool();
+          setPayoutPool(fetchedPool);
+
+          const q = query(collection(db, 'users'), where('walletConnected', '==', true), orderBy('balance', 'desc'));
+          const topInvestorsSnapshot = await getDocs(q);
+          const investors: Investor[] = [];
+          topInvestorsSnapshot.forEach(doc => {
+            const data = doc.data();
+            investors.push({
+              id: doc.id,
+              displayName: data.displayName,
+              balance: data.balance,
+              walletAddress: data.wallet,
+            });
+          });
+          setTopInvestors(investors);
         }
-      } else {
-        router.push('/');
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
-  }, [auth, db, router, fetchQualifiedUsers]);
+  }, []);
 
-  const handleBulkPayout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAdmin || !tonConnectUI || !tonConnectUI.wallet) return;
-
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-      const payoutRef = await addDoc(collection(db, 'payouts'), {
-        amountTON,
-        notes,
-        period,
-        createdAt: serverTimestamp(),
-        createdBy: user.uid,
-        status: 'prepared',
-        type: 'bulk',
-      });
-
-      const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'));
-      const usersSnapshot = await getDocs(usersQuery);
-      const users: User[] = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
-
-      const totalTapsLast24h = users.reduce((acc, user) => acc + (user.taps || 1), 0); 
-
-      const batch = writeBatch(db);
-      users.forEach(user => {
-        const userTaps = user.taps || 1;
-        const shareTON = (userTaps / totalTapsLast24h) * amountTON;
-        const itemRef = doc(db, 'payouts', payoutRef.id, 'items', user.id);
-        batch.set(itemRef, { shareTON });
-      });
-
-      await batch.commit();
-
-      alert('Bulk payout created successfully!');
-      setAmountTON(0);
-      setNotes('');
-    } catch (error) {
-      console.error('Error creating payout:', error);
-      alert('Failed to create payout.');
+  const handleFundPool = async () => {
+    const amount = parseFloat(tonAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid amount.');
+      return;
     }
+    const newPoolBalance = payoutPool + amount;
+    await updatePayoutPool(newPoolBalance);
+    setPayoutPool(newPoolBalance);
+    setTonAmount('');
+    alert(`${amount} TON has been added to the payout pool.`);
   };
 
-  const handleIndividualPayout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isAdmin || !tonConnectUI || !tonConnectUI.wallet || !selectedUser) return;
-
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-      const payoutRef = await addDoc(collection(db, 'payouts'), {
-        amountTON: individualAmount,
-        notes: `Individual payout to ${qualifiedUsers.find(u => u.id === selectedUser)?.displayName}`,
-        period: 'individual',
-        createdAt: serverTimestamp(),
-        createdBy: user.uid,
-        status: 'prepared',
-        type: 'individual',
-        targetUserId: selectedUser,
-      });
-
-      const itemRef = doc(db, 'payouts', payoutRef.id, 'items', selectedUser);
-      await writeBatch(db).set(itemRef, { shareTON: individualAmount }).commit();
-
-      alert('Individual payout created successfully!');
-      setSelectedUser('');
-      setIndividualAmount(0);
-    } catch (error) {
-      console.error('Error creating individual payout:', error);
-      alert('Failed to create individual payout.');
+  const handlePayout = async () => {
+    if (payoutPool <= 0) {
+      alert('Payout pool is empty. Please fund the pool first.');
+      return;
     }
+    
+    console.log("Initiating payout...");
+    const db = getFirestore(app);
+    const q = query(collection(db, 'users'), where('walletConnected', '==', true));
+    const investorsSnapshot = await getDocs(q);
+    
+    let totalInvestment = 0;
+    investorsSnapshot.forEach(doc => {
+      totalInvestment += doc.data().balance;
+    });
+
+    if (totalInvestment === 0) {
+        alert('No investments to pay out.');
+        return;
+    }
+
+    console.log(`Total Investment Value: ${formatNumber(totalInvestment)} ET`);
+    console.log(`Payout Pool: ${payoutPool} TON`);
+    console.log("Calculating individual payouts...");
+
+    const payouts = [];
+    investorsSnapshot.forEach(doc => {
+      const userData = doc.data();
+      const userInvestment = userData.balance;
+      const userPayout = (userInvestment / totalInvestment) * payoutPool;
+      payouts.push({
+        name: userData.displayName,
+        wallet: userData.wallet,
+        payout: userPayout.toFixed(4) + ' TON'
+      });
+    });
+
+    console.log("--- Payout Simulation ---");
+    console.table(payouts);
+    alert('Payout simulation complete! Check the console for details.');
+    
+    // Reset the pool after payout
+    await updatePayoutPool(0);
+    setPayoutPool(0);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 via-purple-600 to-indigo-700 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-          <p className="text-white mt-4">Loading admin panel...</p>
+        <div className="min-h-screen bg-gray-900 flex justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400"></div>
         </div>
-      </div>
     );
   }
 
   if (!isAdmin) {
-    return null;
+    return (
+      <div className="min-h-screen bg-gray-900 flex flex-col justify-center items-center text-white">
+          <h1 className="text-4xl font-bold text-red-500">Access Denied</h1>
+          <p className="text-lg text-gray-400 mt-4">You do not have permission to view this page.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 via-purple-600 to-indigo-700">
-      {/* African Pattern Background */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-black rounded-full"></div>
-        <div className="absolute bottom-32 left-40 w-28 h-28 bg-white rounded-full"></div>
-        <div className="absolute bottom-20 right-20 w-20 h-20 bg-black rounded-full"></div>
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      <h1 className="text-4xl font-bold mb-8 text-purple-400">Admin Dashboard</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="bg-gray-800 p-6 rounded-lg border border-purple-500/50">
+          <h2 className="text-2xl font-bold mb-2 text-purple-300">Total Users</h2>
+          <p className="text-4xl font-bold text-white">{formatNumber(totalUsers)}</p>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg border-yellow-500/50">
+          <h2 className="text-2xl font-bold mb-2 text-yellow-300">Payout Pool</h2>
+          <p className="text-4xl font-bold text-white">{formatNumber(payoutPool)} TON</p>
+        </div>
+        <div className="bg-gray-800 p-6 rounded-lg border-teal-500/50">
+          <h2 className="text-2xl font-bold mb-2 text-teal-300">Execute Payouts</h2>
+          <button 
+            onClick={handlePayout}
+            className="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors w-full"
+          >
+            Initiate Payout
+          </button>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="bg-gray-800 p-6 rounded-lg border-green-500/50 col-span-2">
+            <h2 className="text-2xl font-bold mb-2 text-green-300">Fund Payout Pool</h2>
+            <p className="text-gray-400 mb-4">Send real TON Coin to the global payout pool. This action is irreversible.</p>
+            <div className="flex gap-4">
+                <input 
+                    type="number"
+                    value={tonAmount}
+                    onChange={(e) => setTonAmount(e.target.value)}
+                    placeholder="Enter TON Amount"
+                    className="bg-gray-700 text-white border border-gray-600 rounded-lg py-2 px-4 w-full"
+                />
+                <button 
+                    onClick={handleFundPool}
+                    className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                    Fund
+                </button>
+            </div>
+        </div>
       </div>
 
-      <div className="relative z-10 container mx-auto p-4">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-5xl font-bold text-white drop-shadow-lg">👑 Super Admin</h1>
-            <p className="text-purple-100 text-xl">African Investment Empire Management</p>
-          </div>
-          <TonConnectWrapper />
-        </div>
-
-        {connected && wallet && (
-          <div className="bg-green-500/20 backdrop-blur-sm rounded-xl p-4 mb-8 border border-green-400/30">
-            <p className="text-green-100 text-center">
-              ✅ Connected wallet: {wallet.account.address.slice(0, 12)}...{wallet.account.address.slice(-8)}
-            </p>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Bulk Payout Section */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-6">💰 Bulk TON Distribution</h2>
-            <form onSubmit={handleBulkPayout} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold mb-2 text-white" htmlFor="amountTON">
-                  Total Amount (TON)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="amountTON"
-                  value={amountTON}
-                  onChange={(e) => setAmountTON(Number(e.target.value))}
-                  className="w-full py-3 px-4 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter TON amount"
-                  required
-                />
+      <div>
+        <h2 className="text-3xl font-bold mb-4 text-pink-400">Top Investors</h2>
+        <div className="bg-gray-800 rounded-lg border border-pink-500/50 p-4">
+        <ul className="space-y-4">
+          {topInvestors.map((investor, index) => (
+            <li key={investor.id} className="grid grid-cols-12 items-center bg-gray-700/50 p-3 rounded-lg">
+              <div className="col-span-1 text-xl font-bold text-pink-300">{index + 1}</div>
+              <div className="col-span-4">
+                <p className="font-bold text-md text-white">{investor.displayName}</p>
+                <p className="text-xs text-gray-400 truncate">{investor.walletAddress}</p>
               </div>
-              <div>
-                <label className="block text-sm font-bold mb-2 text-white" htmlFor="notes">
-                  Notes
-                </label>
-                <textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full py-3 px-4 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Payment description..."
-                  rows={3}
-                />
+              <div className="col-span-3 text-right font-bold text-lg text-teal-300">{formatNumber(investor.balance)} ET</div>
+              <div className="col-span-4 text-right">
+                 {/* Payout button for individual user could go here */}
               </div>
-              <div>
-                <label className="block text-sm font-bold mb-2 text-white" htmlFor="period">
-                  Period
-                </label>
-                <select
-                  id="period"
-                  value={period}
-                  onChange={(e) => setPeriod(e.target.value)}
-                  className="w-full py-3 px-4 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                >
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="special">Special Event</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                disabled={!tonConnectUI || !tonConnectUI.wallet}
-                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
-              >
-                {tonConnectUI && tonConnectUI.wallet ? '🚀 Create Bulk Payout' : '⚠️ Connect Wallet First'}
-              </button>
-            </form>
-          </div>
-
-          {/* Individual Payout Section */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-            <h2 className="text-2xl font-bold text-white mb-6">🎯 Individual TON Payment</h2>
-            <form onSubmit={handleIndividualPayout} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold mb-2 text-white" htmlFor="selectedUser">
-                  Select Qualified User
-                </label>
-                <select
-                  id="selectedUser"
-                  value={selectedUser}
-                  onChange={(e) => setSelectedUser(e.target.value)}
-                  className="w-full py-3 px-4 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  required
-                >
-                  <option value="">Choose a qualified user</option>
-                  {qualifiedUsers.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.displayName || 'Anonymous'} - {user.balance?.toLocaleString()} CT
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-2 text-white" htmlFor="individualAmount">
-                  TON Amount
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="individualAmount"
-                  value={individualAmount}
-                  onChange={(e) => setIndividualAmount(Number(e.target.value))}
-                  className="w-full py-3 px-4 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                  placeholder="Enter TON amount"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={!tonConnectUI || !tonConnectUI.wallet || !selectedUser}
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
-              >
-                {tonConnectUI && tonConnectUI.wallet ? '💸 Send Individual Payment' : '⚠️ Connect Wallet First'}
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Qualified Users List */}
-        <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-          <h3 className="text-2xl font-bold text-white mb-6">
-            🏆 Qualified Users ({qualifiedUsers.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {qualifiedUsers.map((user, index) => (
-              <div key={user.id} className="bg-white/10 rounded-lg p-4 border border-white/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-yellow-400 font-bold">#{index + 1}</span>
-                  <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">✅ Qualified</span>
-                </div>
-                <div className="text-white font-semibold">{user.displayName || 'Anonymous'}</div>
-                <div className="text-purple-200 text-sm">{user.balance?.toLocaleString()} CT</div>
-                <div className="text-purple-200 text-sm">{user.taps?.toLocaleString()} taps</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Admin Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
-            <div className="text-3xl font-bold text-white">{qualifiedUsers.length}</div>
-            <div className="text-purple-100">Qualified Users</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
-            <div className="text-3xl font-bold text-white">50</div>
-            <div className="text-purple-100">Max Qualified</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
-            <div className="text-3xl font-bold text-white">24/7</div>
-            <div className="text-purple-100">Admin Access</div>
-          </div>
+            </li>
+          ))}
+        </ul>
         </div>
       </div>
     </div>

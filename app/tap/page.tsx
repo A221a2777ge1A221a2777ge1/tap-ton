@@ -78,25 +78,29 @@ export default function TapPage() {
   };
 
   const formatNumber = (num: number) => {
+    if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
+    if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
+    if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
+    if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
     return new Intl.NumberFormat().format(num);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-yellow-500 to-orange-600">
-      {/* African Pattern Background */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-black rounded-full"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-white rounded-full"></div>
-        <div className="absolute bottom-32 left-40 w-28 h-28 bg-black rounded-full"></div>
-        <div className="absolute bottom-20 right-20 w-20 h-20 bg-white rounded-full"></div>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Neon Glow Background */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-purple-600 rounded-full filter blur-3xl"></div>
+        <div className="absolute top-40 right-32 w-24 h-24 bg-blue-500 rounded-full filter blur-3xl"></div>
+        <div className="absolute bottom-32 left-40 w-28 h-28 bg-pink-500 rounded-full filter blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-20 h-20 bg-teal-400 rounded-full filter blur-3xl"></div>
       </div>
 
       <div className="relative z-10 container mx-auto p-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white drop-shadow-lg">Crypto Tycoon</h1>
-            <p className="text-yellow-100">African Investment Empire</p>
+            <h1 className="text-4xl font-bold text-white drop-shadow-[0_0_10px_rgba(168,85,247,0.7)]">Evana Tycoon</h1>
+            <p className="text-teal-300">Build Your African Investment Empire</p>
           </div>
           <TonConnectWrapper />
         </div>
@@ -104,104 +108,96 @@ export default function TapPage() {
         {user ? (
           <div className="max-w-4xl mx-auto">
             {/* Welcome Section */}
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/30">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-purple-500/30">
               <h2 className="text-2xl font-bold text-white mb-2">
                 Welcome, {getTelegramUser()?.first_name || 'Tycoon'}! 👑
               </h2>
-              <p className="text-yellow-100">
+              <p className="text-teal-300">
                 {tonConnectUI && tonConnectUI.wallet ? 
-                  "🎉 Your TON wallet is connected! You're eligible for real cryptocurrency rewards!" :
-                  "Connect your TON wallet to qualify for real TON payments from the super admin!"
+                  "🎉 Your TON wallet is connected! You're eligible for exclusive rewards!" :
+                  "Connect your TON wallet to supercharge your earnings!"
                 }
               </p>
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-purple-500/30 text-center shadow-lg">
                 <div className="text-3xl mb-2">💰</div>
-                <div className="text-2xl font-bold text-white">{formatNumber(balance)}</div>
-                <div className="text-yellow-100">CT Balance</div>
+                <div className="text-2xl font-bold text-purple-300">{formatNumber(balance)}</div>
+                <div className="text-gray-400">ET Coins</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-teal-500/30 text-center shadow-lg">
                 <div className="text-3xl mb-2">👆</div>
-                <div className="text-2xl font-bold text-white">{formatNumber(taps)}</div>
-                <div className="text-yellow-100">Total Taps</div>
+                <div className="text-2xl font-bold text-teal-300">{formatNumber(taps)}</div>
+                <div className="text-gray-400">Total Taps</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-pink-500/30 text-center shadow-lg">
                 <div className="text-3xl mb-2">📈</div>
-                <div className="text-2xl font-bold text-white">{formatNumber(passiveIncome)}</div>
-                <div className="text-yellow-100">CT/s Income</div>
+                <div className="text-2xl font-bold text-pink-300">{formatNumber(passiveIncome)}</div>
+                <div className="text-gray-400">ET/s Income</div>
               </div>
             </div>
 
             {/* Tap Section */}
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-white/30 text-center">
-              <h3 className="text-2xl font-bold text-white mb-6">Tap to Earn CT Tokens</h3>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-purple-500/30 text-center">
+              <h3 className="text-2xl font-bold text-white mb-6">Tap to Earn ET Coins</h3>
               <button
                 onClick={handleTap}
-                className="w-48 h-48 bg-gradient-to-br from-yellow-300 to-orange-600 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center mx-auto mb-6"
+                className="w-48 h-48 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full shadow-2xl shadow-purple-500/50 transform hover:scale-105 transition-all duration-200 flex items-center justify-center mx-auto mb-6"
               >
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-white mb-2">CT</div>
-                  <div className="text-white font-semibold">Crypto Tycoon</div>
+                  <div className="text-6xl font-bold text-white mb-2">ET</div>
+                  <div className="text-white font-semibold">Evana Tycoon</div>
                 </div>
               </button>
-              <p className="text-yellow-100 text-lg">
-                Each tap earns you 1 CT token. Build your African investment empire!
+              <p className="text-teal-300 text-lg">
+                Each tap earns you 1 ET Coin. Grow your empire!
               </p>
             </div>
 
-            {/* Qualification Status */}
-            <div className={`rounded-xl p-6 mb-8 border-2 ${
-              connected && wallet ? 
-                'bg-green-500/20 border-green-400' : 
-                'bg-yellow-500/20 border-yellow-400'
-            }`}>
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">
-                  {connected && wallet ? '✅' : '⚠️'}
+            {/* Investment Categories */}
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-teal-500/30">
+              <h3 className="text-2xl font-bold text-white mb-6">Investments</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Real Estate */}
+                <div className="bg-gray-700/50 p-4 rounded-lg border border-purple-500/50">
+                  <h4 className="text-xl font-bold text-purple-300 mb-2">Real Estate</h4>
+                  <p className="text-gray-400 mb-4">Invest in high-yield properties across Africa.</p>
+                  <button className="bg-purple-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors w-full">View</button>
                 </div>
-                <div>
-                  <h4 className="text-xl font-bold text-white">
-                    {connected && wallet ? 'TON Wallet Connected!' : 'Connect TON Wallet'}
-                  </h4>
-                  <p className="text-yellow-100">
-                    {connected && wallet ? 
-                      `You qualify for real TON payments! Address: ${wallet.account.address.slice(0, 8)}...${wallet.account.address.slice(-8)}` :
-                      'Connect your TON wallet to qualify for real cryptocurrency rewards!'
-                    }
-                  </p>
+                {/* Agriculture */}
+                <div className="bg-gray-700/50 p-4 rounded-lg border border-teal-500/50">
+                  <h4 className="text-xl font-bold text-teal-300 mb-2">Agriculture</h4>
+                  <p className="text-gray-400 mb-4">Fund farms and export valuable crops.</p>
+                  <button className="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors w-full">View</button>
+                </div>
+                {/* Technology */}
+                <div className="bg-gray-700/50 p-4 rounded-lg border border-pink-500/50">
+                  <h4 className="text-xl font-bold text-pink-300 mb-2">Technology</h4>
+                  <p className="text-gray-400 mb-4">Back innovative African tech startups.</p>
+                  <button className="bg-pink-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-pink-700 transition-colors w-full">View</button>
+                </div>
+                {/* Politics */}
+                <div className="bg-gray-700/50 p-4 rounded-lg border border-yellow-500/50">
+                  <h4 className="text-xl font-bold text-yellow-300 mb-2">Politics</h4>
+                  <p className="text-gray-400 mb-4">Influence policy and gain powerful allies.</p>
+                  <button className="bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors w-full">View</button>
+                </div>
+                 {/* Supermarkets / Goods & Services */}
+                 <div className="bg-gray-700/50 p-4 rounded-lg border-green-500/50">
+                    <h4 className="text-xl font-bold text-green-300 mb-2">Supermarkets</h4>
+                    <p className="text-gray-400 mb-4">Own a chain of supermarkets across the continent.</p>
+                    <button className="bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors w-full">View</button>
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-                <h4 className="text-xl font-bold text-white mb-4">🏠 African Investments</h4>
-                <p className="text-yellow-100 mb-4">
-                  Invest your CT tokens in African real estate, agriculture, and technology
-                </p>
-                <button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
-                  View Investments
-                </button>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-                <h4 className="text-xl font-bold text-white mb-4">🏆 Leaderboard</h4>
-                <p className="text-yellow-100 mb-4">
-                  Compete with 300+ players for the top 50 positions and TON rewards
-                </p>
-                <button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
-                  View Rankings
-                </button>
-              </div>
-            </div>
           </div>
         ) : (
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-            <p className="text-white mt-4">Loading your empire...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto"></div>
+            <p className="text-gray-400 mt-4">Loading your empire...</p>
           </div>
         )}
       </div>
