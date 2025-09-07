@@ -25,12 +25,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json">
-        <nav className="flex justify-center my-4">
-          <Link href="/" className="mx-4">Home</Link>
-          <Link href="/tap" className="mx-4">Tap</Link>
-          <Link href="/leaderboard" className="mx-4">Leaderboard</Link>
-          <Link href="/admin" className="mx-4">Admin</Link>
+      <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
+        <nav className="flex justify-center my-4 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full p-2 mx-4">
+          <Link href="/" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🏠 Home</Link>
+          <Link href="/tap" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👆 Tap</Link>
+          <Link href="/leaderboard" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">🏆 Leaderboard</Link>
+          <Link href="/admin" className="mx-2 px-4 py-2 rounded-full text-white hover:bg-white/20 transition-colors font-semibold">👑 Admin</Link>
         </nav>
         {children}
         </TonConnectUIProvider>

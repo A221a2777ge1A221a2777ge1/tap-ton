@@ -1,6 +1,8 @@
 
 {
-  "url": "https://your-app-url.com",
-  "name": "My App",
-  "iconUrl": "https://your-app-url.com/icon.png"
+  "url": "https://crypto-tycoon-africa.web.app",
+  "name": "Crypto Tycoon - African Investment Empire",
+  "iconUrl": "https://crypto-tycoon-africa.web.app/icon.svg",
+  "termsOfUseUrl": "https://crypto-tycoon-africa.web.app/terms",
+  "privacyPolicyUrl": "https://crypto-tycoon-africa.web.app/privacy"
 }

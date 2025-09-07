@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Crypto Tycoon - African Investment Empire
 
-## Getting Started
+A Web3 tap-to-earn game with African investment theme, built with Next.js, Firebase, and TON blockchain integration.
 
-First, run the development server:
+## ✨ Features
 
+- **Tap-to-Earn**: Earn CT (Crypto Tycoon) tokens by tapping
+- **TON Wallet Integration**: Connect TON wallets for real cryptocurrency rewards
+- **African Investment Theme**: Beautiful African-inspired design
+- **Leaderboard**: Compete with 300+ players for top 50 positions
+- **Admin Panel**: Super admin can distribute TON to qualified users
+- **Qualification System**: Only top 50 players with connected wallets qualify
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Firebase (Authentication, Firestore)
+- **Blockchain**: TON Connect, TON SDK
+- **Deployment**: Firebase Hosting
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- Firebase CLI
+- TON wallet (Tonkeeper, MyTonWallet, etc.)
+
+### Installation
 ```bash
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Firebase config
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Firebase Setup
+```bash
+# Install Firebase CLI
+npm install -g firebase-tools
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Login to Firebase
+firebase login
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Initialize Firebase
+firebase init
 
-## Learn More
+# Select Hosting and Firestore
+# Configure hosting to use 'out' directory
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📱 App Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Homepage**: African-themed landing page with TON Connect
+- **Tap Page**: Interactive tap-to-earn with CT currency
+- **Leaderboard**: 300 African players with qualification status
+- **Admin Panel**: TON payment management for super admins
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 Key Features
 
-## Deploy on Vercel
+### Currency System
+- **CT (Crypto Tycoon)**: In-game currency
+- **TON Integration**: Real cryptocurrency rewards
+- **Qualification**: Top 50 players only
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### African Investment Theme
+- **Real Estate**: African cities and properties
+- **Agriculture**: Farms, plantations, mining
+- **Technology**: African tech companies
+- **Cultural Design**: Authentic African aesthetics
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔧 Development
+
+### Available Scripts
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+## 🚀 Deployment
+
+### Firebase Hosting
+```bash
+# Build the app
+npm run build
+
+# Deploy to Firebase
+firebase deploy
+```
+
+### Environment Variables
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+## 🔒 Security
+
+- **Firebase Authentication**: Secure user management
+- **Firestore Rules**: Database security
+- **TON Connect**: Secure wallet integration
+- **Admin Controls**: Role-based access
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+**Built with ❤️ for the African crypto community**
