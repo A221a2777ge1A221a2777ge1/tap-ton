@@ -41,10 +41,7 @@ A modern tap-to-earn cryptocurrency game focused on African investments, built w
 
 ### Installation
 ```bash
-# Navigate to the project directory
-cd tap-ton/tap-ton
-
-# Install dependencies
+# From the repository root
 npm install
 
 # Set up environment variables
@@ -129,20 +126,19 @@ npm run lint         # Run ESLint
 
 ### Project Structure
 ```
-tap-ton/tap-ton/
-├── app/                 # Next.js App Router
-│   ├── page.tsx        # Homepage
-│   ├── tap/page.tsx    # Tap-to-earn page
-│   ├── leaderboard/page.tsx # Leaderboard
-│   ├── admin/page.tsx  # Admin panel
-│   └── layout.tsx      # Root layout
-├── lib/                # Utilities
-│   ├── firebase.ts     # Firebase config
-│   └── telegram.ts     # Telegram integration
-├── public/             # Static assets
-│   ├── icon.svg        # App icon
-│   └── tonconnect-manifest.json # TON Connect config
-└── package.json        # Dependencies
+app/                      # Next.js App Router
+├── page.tsx              # Homepage
+├── tap/page.tsx          # Tap-to-earn page
+├── leaderboard/page.tsx  # Leaderboard
+├── admin/page.tsx        # Admin panel
+└── layout.tsx            # Root layout
+lib/                      # Utilities
+├── firebase.ts           # Firebase config
+└── telegram.ts           # Telegram integration
+public/                   # Static assets
+├── icon.svg              # App icon
+└── tonconnect-manifest.json # TON Connect config
+package.json              # Dependencies
 ```
 
 ## 🚀 Deployment
