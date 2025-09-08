@@ -3,9 +3,9 @@ import { TonConnectWrapper } from '../components/TonConnectWrapper';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen text-white">
       {/* Neon Glow Background */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-10 left-10 w-32 h-32 bg-purple-600 rounded-full filter blur-3xl"></div>
         <div className="absolute top-40 right-20 w-24 h-24 bg-blue-500 rounded-full filter blur-3xl"></div>
         <div className="absolute bottom-20 left-32 w-28 h-28 bg-pink-500 rounded-full filter blur-3xl"></div>
