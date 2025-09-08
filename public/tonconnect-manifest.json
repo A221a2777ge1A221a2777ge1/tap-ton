@@ -1,8 +1,7 @@
-
 {
-  "url": "http://localhost:3000",
+  "url": "https://tonup-t0iem.web.app",
   "name": "Crypto Tycoon - African Investment Empire",
-  "iconUrl": "http://localhost:3000/icon.svg",
-  "termsOfUseUrl": "http://localhost:3000/terms",
-  "privacyPolicyUrl": "http://localhost:3000/privacy"
+  "iconUrl": "https://tonup-t0iem.web.app/icon.svg",
+  "termsOfUseUrl": "https://tonup-t0iem.web.app/terms",
+  "privacyPolicyUrl": "https://tonup-t0iem.web.app/privacy"
 }

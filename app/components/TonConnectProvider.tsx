@@ -14,13 +14,9 @@ export function TonConnectProvider({ children }: { children: React.ReactNode }) 
     return <>{children}</>;
   }
 
-  const manifestUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/tonconnect-manifest.json`
-    : '/tonconnect-manifest.json';
-
   return (
     <TonConnectUIProvider 
-      manifestUrl={manifestUrl}
+      manifestUrl="https://tonup-t0iem.web.app/tonconnect-manifest.json"
       actionsConfiguration={{
         twaReturnUrl: 'https://t.me/crypto_tycoon_bot'
       }}

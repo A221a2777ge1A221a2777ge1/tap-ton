@@ -26,7 +26,8 @@ export function TonConnectWrapper() {
 export function useTonConnect() {
   const [mounted, setMounted] = useState(false);
   const [tonConnectUI] = useTonConnectUI();
-  const { wallet, connected } = useTonWallet();
+  const wallet = useTonWallet();
+  const connected = !!wallet;
 
   useEffect(() => {
     setMounted(true);
