@@ -1,9 +1,9 @@
-import Image from "next/image";
+ 
 
 export default function Home() {
   return (
     <div className="font-sans min-h-screen">
-      <main className="px-6 sm:px-10 md:px-16 lg:px-24 py-20">
+      <main className="px-6 sm:px-10 md:px-16 lg:px-24 py-24">
         <section className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border" style={{ borderColor: "var(--border)", background: "rgba(34,197,94,0.06)" }}>
             <span className="h-2 w-2 rounded-full" style={{ background: "var(--accent)" }} />
@@ -24,7 +24,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <section id="features" className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {["Fast DX", "Beautiful defaults", "Accessible by design"].map((title, idx) => (
             <div key={idx} className="card p-6">
               <h3 className="text-xl font-semibold mb-2" style={{ color: "#d1fadf" }}>{title}</h3>
@@ -34,6 +34,33 @@ export default function Home() {
               </p>
             </div>
           ))}
+        </section>
+
+        <section id="docs" className="mt-20 max-w-6xl mx-auto">
+          <div className="card p-8">
+            <h2 className="text-2xl font-bold">Documentation</h2>
+            <p className="mt-2" style={{ color: "var(--muted-foreground)" }}>
+              Explore guides, examples, and API references to get productive faster.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a className="btn-primary" href="https://nextjs.org/docs" target="_blank" rel="noreferrer">Next.js Docs</a>
+              <a className="btn-ghost" href="https://tailwindcss.com/docs" target="_blank" rel="noreferrer">Tailwind Docs</a>
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="mt-20 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {["Free", "Pro", "Enterprise"].map((tier, idx) => (
+              <div key={idx} className="card p-6">
+                <h3 className="text-xl font-semibold" style={{ color: "#d1fadf" }}>{tier}</h3>
+                <p className="mt-2" style={{ color: "var(--muted-foreground)" }}>
+                  Great for {tier === "Free" ? "trying things out" : tier === "Pro" ? "growing teams" : "large orgs"}.
+                </p>
+                <a className="btn-primary mt-6 inline-block" href="#get-started">Choose {tier}</a>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
     </div>
