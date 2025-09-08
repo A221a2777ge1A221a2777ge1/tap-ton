@@ -5,17 +5,15 @@ import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/a
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { getTelegramUser } from '@/lib/telegram';
-import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from '@/components/ui/button';
-import { PiggyBank, Link, Moon } from 'lucide-react';
+import { TonConnectWrapper, useTonConnect } from '../../components/TonConnectWrapper';
 
 export default function TapPage() {
   const [user, setUser] = useState<User | null>(null);
   const [taps, setTaps] = useState(0);
-  const [balance, setBalance] = useState(7);
+  const [balance, setBalance] = useState(0);
   const [passiveIncome, setPassiveIncome] = useState(0);
-  const [tonConnectUI] = useTonConnectUI();
+  const [isQualified, setIsQualified] = useState(false);
+  const { tonConnectUI, wallet, connected } = useTonConnect();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -32,6 +30,7 @@ export default function TapPage() {
           setTaps(userData.taps || 0);
           setBalance(userData.balance || 0);
           setPassiveIncome(userData.passiveIncome || 0);
+          setIsQualified(userData.isQualified || false);
         } else {
           const tgUser = getTelegramUser();
           if (tgUser) {
@@ -48,9 +47,9 @@ export default function TapPage() {
           }
         }
 
-        if (tonConnectUI.connected && tonConnectUI.wallet) {
+        if (connected && wallet) {
           updateDoc(userRef, {
-            wallet: tonConnectUI.wallet.account.address,
+            wallet: wallet.account.address,
             walletConnected: true
           });
         }
@@ -61,7 +60,7 @@ export default function TapPage() {
     });
 
     return () => unsubscribe();
-  }, [tonConnectUI.connected, tonConnectUI.wallet]);
+  }, [tonConnectUI]);
 
   const handleTap = async () => {
     if (!user) return;
@@ -81,65 +80,132 @@ export default function TapPage() {
   };
 
   const formatNumber = (num: number) => {
-    if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
-    if (num >= 1e9) return `${(num / 1e9).toFixed(2)}B`;
-    if (num >= 1e6) return `${(num / 1e6).toFixed(2)}M`;
-    if (num >= 1e3) return `${(num / 1e3).toFixed(2)}K`;
     return new Intl.NumberFormat().format(num);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center p-4">
-      <div className="w-full max-w-md">
-        <header className="flex justify-between items-center py-2 mb-4">
-          <div />
-          <h1 className="text-2xl font-bold">Evana Tycoon</h1>
-          <Button variant="ghost" size="icon">
-            <Moon className="h-6 w-6" />
-          </Button>
-        </header>
+    <div className="min-h-screen bg-gradient-to-br from-green-400 via-yellow-500 to-orange-600">
+      {/* African Pattern Background */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-black rounded-full"></div>
+        <div className="absolute top-40 right-32 w-24 h-24 bg-white rounded-full"></div>
+        <div className="absolute bottom-32 left-40 w-28 h-28 bg-black rounded-full"></div>
+        <div className="absolute bottom-20 right-20 w-20 h-20 bg-white rounded-full"></div>
+      </div>
 
-        <main>
-          <p className="text-center text-gray-400 mb-8">Your African Empire Awaits</p>
-
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <Card className="bg-gray-900 border border-gray-700 rounded-lg">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Balance</CardTitle>
-                <PiggyBank className="h-5 w-5 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatNumber(balance)}</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gray-900 border border-gray-700 rounded-lg">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Income</CardTitle>
-                <Link className="h-5 w-5 text-gray-400" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatNumber(passiveIncome)}/s</div>
-              </CardContent>
-            </Card>
+      <div className="relative z-10 container mx-auto p-4">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg">Crypto Tycoon</h1>
+            <p className="text-yellow-100">African Investment Empire</p>
           </div>
+          <TonConnectWrapper />
+        </div>
 
-          <div className="flex justify-around mb-8 text-gray-400">
-            <button className="hover:text-white">Tap</button>
-            <button className="hover:text-white">Invest</button>
-            <button className="hover:text-white">Leaderboard</button>
-          </div>
+        {user ? (
+          <div className="max-w-4xl mx-auto">
+            {/* Welcome Section */}
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/30">
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Welcome, {getTelegramUser()?.first_name || 'Tycoon'}! 👑
+              </h2>
+              <p className="text-yellow-100">
+                {tonConnectUI.wallet ? 
+                  "🎉 Your TON wallet is connected! You're eligible for real cryptocurrency rewards!" :
+                  "Connect your TON wallet to qualify for real TON payments from the super admin!"
+                }
+              </p>
+            </div>
 
-          <div 
-            className="w-full h-64 bg-gray-900 border border-gray-700 rounded-lg flex items-center justify-center cursor-pointer mb-8"
-            onClick={handleTap}
-          >
-            <p className="text-gray-500">Tap!</p>
-          </div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+                <div className="text-3xl mb-2">💰</div>
+                <div className="text-2xl font-bold text-white">{formatNumber(balance)}</div>
+                <div className="text-yellow-100">CT Balance</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+                <div className="text-3xl mb-2">👆</div>
+                <div className="text-2xl font-bold text-white">{formatNumber(taps)}</div>
+                <div className="text-yellow-100">Total Taps</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30 text-center">
+                <div className="text-3xl mb-2">📈</div>
+                <div className="text-2xl font-bold text-white">{formatNumber(passiveIncome)}</div>
+                <div className="text-yellow-100">CT/s Income</div>
+              </div>
+            </div>
 
-          <div className="flex justify-center">
-            <TonConnectButton />
+            {/* Tap Section */}
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-white/30 text-center">
+              <h3 className="text-2xl font-bold text-white mb-6">Tap to Earn CT Tokens</h3>
+              <button
+                onClick={handleTap}
+                className="w-48 h-48 bg-gradient-to-br from-yellow-300 to-orange-600 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center mx-auto mb-6"
+              >
+                <div className="text-center">
+                  <div className="text-6xl font-bold text-white mb-2">CT</div>
+                  <div className="text-white font-semibold">Crypto Tycoon</div>
+                </div>
+              </button>
+              <p className="text-yellow-100 text-lg">
+                Each tap earns you 1 CT token. Build your African investment empire!
+              </p>
+            </div>
+
+            {/* Qualification Status */}
+            <div className={`rounded-xl p-6 mb-8 border-2 ${
+              connected && wallet ? 
+                'bg-green-500/20 border-green-400' : 
+                'bg-yellow-500/20 border-yellow-400'
+            }`}>
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">
+                  {connected && wallet ? '✅' : '⚠️'}
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold text-white">
+                    {connected && wallet ? 'TON Wallet Connected!' : 'Connect TON Wallet'}
+                  </h4>
+                  <p className="text-yellow-100">
+                    {connected && wallet ? 
+                      `You qualify for real TON payments! Address: ${wallet.account.address.slice(0, 8)}...${wallet.account.address.slice(-8)}` :
+                      'Connect your TON wallet to qualify for real cryptocurrency rewards!'
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                <h4 className="text-xl font-bold text-white mb-4">🏠 African Investments</h4>
+                <p className="text-yellow-100 mb-4">
+                  Invest your CT tokens in African real estate, agriculture, and technology
+                </p>
+                <button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                  View Investments
+                </button>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+                <h4 className="text-xl font-bold text-white mb-4">🏆 Leaderboard</h4>
+                <p className="text-yellow-100 mb-4">
+                  Compete with 300+ players for the top 50 positions and TON rewards
+                </p>
+                <button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                  View Rankings
+                </button>
+              </div>
+            </div>
           </div>
-        </main>
+        ) : (
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p className="text-white mt-4">Loading your empire...</p>
+          </div>
+        )}
       </div>
     </div>
   );
