@@ -53,13 +53,13 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <div className="relative z-10 container mx-auto p-4">
-        <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
-              Leaderboard
-            </h1>
-            <p className="text-lg text-teal-300 mt-2">Top investors in the Evana Tycoon ecosystem.</p>
+    <div className="min-h-screen text-white">
+      <div className="relative z-10 container mx-auto p-6">
+        <div className="text-center mb-10">
+          <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+            Leaderboard
+          </h1>
+          <p className="text-lg text-teal-300 mt-2">Top investors in the Evana Tycoon ecosystem.</p>
         </div>
 
         {loading ? (
@@ -68,10 +68,13 @@ export default function LeaderboardPage() {
             <p className="text-gray-400 mt-4">Loading rankings...</p>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+          <div className="max-w-4xl mx-auto card p-6">
             <ul className="space-y-4">
               {leaderboard.map((user, index) => (
-                <li key={user.id} className="grid grid-cols-12 items-center bg-gray-700/50 p-4 rounded-lg border border-teal-500/30 hover:bg-purple-600/30 transition-colors">
+                <li
+                  key={user.id}
+                  className="grid grid-cols-12 items-center bg-white/5 p-4 rounded-lg border border-white/10 hover:bg-white/10 transition-colors duration-200"
+                >
                   <div className="col-span-1 text-2xl font-bold text-purple-300">{index + 1}</div>
                   <div className="col-span-5">
                     <p className="font-bold text-lg text-white">{user.displayName}</p>

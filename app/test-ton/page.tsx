@@ -27,13 +27,13 @@ export default function TestTonPage() {
   }, [wallet]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-8">
+    <div className="min-h-screen text-white p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-8 text-center">
           TON Connect Test Page
         </h1>
         
-        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-6">
+        <div className="card p-6 mb-6">
           <h2 className="text-2xl font-bold text-white mb-4">Connection Status</h2>
           <div className="space-y-2">
             <p className="text-white">
@@ -57,14 +57,14 @@ export default function TestTonPage() {
           </div>
         </div>
 
-        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-6">
+        <div className="card p-6 mb-6">
           <h2 className="text-2xl font-bold text-white mb-4">TON Connect Button</h2>
           <div className="flex justify-center">
             <TonConnectWrapper />
           </div>
         </div>
 
-        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6">
+        <div className="card p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Debug Logs</h2>
           <div className="bg-black/50 rounded-lg p-4 max-h-64 overflow-y-auto">
             {logs.map((log, index) => (

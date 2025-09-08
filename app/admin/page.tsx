@@ -169,23 +169,23 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen text-white p-8">
       <h1 className="text-4xl font-bold mb-8 text-purple-400">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <div className="bg-gray-800 p-6 rounded-lg border border-purple-500/50">
+        <div className="card p-6">
           <h2 className="text-2xl font-bold mb-2 text-purple-300">Total Users</h2>
           <p className="text-4xl font-bold text-white">{formatNumber(totalUsers)}</p>
         </div>
-        <div className="bg-gray-800 p-6 rounded-lg border-yellow-500/50">
+        <div className="card p-6">
           <h2 className="text-2xl font-bold mb-2 text-yellow-300">Payout Pool</h2>
           <p className="text-4xl font-bold text-white">{formatNumber(payoutPool)} TON</p>
         </div>
-        <div className="bg-gray-800 p-6 rounded-lg border-teal-500/50">
+        <div className="card p-6">
           <h2 className="text-2xl font-bold mb-2 text-teal-300">Execute Payouts</h2>
           <button 
             onClick={handlePayout}
-            className="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors w-full"
+            className="btn-primary w-full"
           >
             Initiate Payout
           </button>
@@ -193,7 +193,7 @@ export default function AdminPage() {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <div className="bg-gray-800 p-6 rounded-lg border-green-500/50 col-span-2">
+        <div className="card p-6 col-span-2">
             <h2 className="text-2xl font-bold mb-2 text-green-300">Fund Payout Pool</h2>
             <p className="text-gray-400 mb-4">Send real TON Coin to the global payout pool. This action is irreversible.</p>
             <div className="flex gap-4">
@@ -206,7 +206,7 @@ export default function AdminPage() {
                 />
                 <button 
                     onClick={handleFundPool}
-                    className="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition-colors"
+                    className="btn-primary px-6"
                 >
                     Fund
                 </button>
@@ -216,10 +216,10 @@ export default function AdminPage() {
 
       <div>
         <h2 className="text-3xl font-bold mb-4 text-pink-400">Top Investors</h2>
-        <div className="bg-gray-800 rounded-lg border border-pink-500/50 p-4">
+        <div className="card p-4">
         <ul className="space-y-4">
           {topInvestors.map((investor, index) => (
-            <li key={investor.id} className="grid grid-cols-12 items-center bg-gray-700/50 p-3 rounded-lg">
+            <li key={investor.id} className="grid grid-cols-12 items-center bg-white/5 p-3 rounded-lg border border-white/10">
               <div className="col-span-1 text-xl font-bold text-pink-300">{index + 1}</div>
               <div className="col-span-4">
                 <p className="font-bold text-md text-white">{investor.displayName}</p>
