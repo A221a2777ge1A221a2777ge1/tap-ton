@@ -1,6 +1,6 @@
 'use client';
 
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
+import { THEME, TonConnectUIProvider } from '@tonconnect/ui-react';
 import { useEffect, useState } from 'react';
 
 export function TonConnectProvider({ children }: { children: React.ReactNode }) {
@@ -25,7 +25,7 @@ export function TonConnectProvider({ children }: { children: React.ReactNode }) 
         twaReturnUrl: 'https://t.me/crypto_tycoon_bot'
       }}
       uiPreferences={{
-        theme: 'DARK',
+        theme: THEME.DARK,
         borderRadius: 's'
       }}
       walletsListConfiguration={{

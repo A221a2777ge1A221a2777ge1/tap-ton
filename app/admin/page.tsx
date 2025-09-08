@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, getDocs, writeBatch, limit } from 'firebase/firestore';
 import { app } from '../../lib/firebase';
@@ -29,6 +29,22 @@ export default function AdminPage() {
   const db = getFirestore(app);
   const { tonConnectUI, wallet, connected } = useTonConnect();
 
+  const fetchQualifiedUsers = useCallback(async () => {
+    try {
+      const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'), limit(50));
+      const usersSnapshot = await getDocs(usersQuery);
+      const users: User[] = usersSnapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      } as User));
+      
+      const qualified = users.filter(user => user.walletConnected);
+      setQualifiedUsers(qualified);
+    } catch (error) {
+      console.error('Error fetching qualified users:', error);
+    }
+  }, [db]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -46,28 +62,11 @@ export default function AdminPage() {
       setLoading(false);
     });
     return () => unsubscribe();
-  }, [auth, db, router]);
-
-  const fetchQualifiedUsers = async () => {
-    try {
-      const usersQuery = query(collection(db, 'users'), orderBy('balance', 'desc'), limit(50));
-      const usersSnapshot = await getDocs(usersQuery);
-      const users: User[] = usersSnapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      } as User));
-      
-      // Filter users with connected wallets
-      const qualified = users.filter(user => user.walletConnected);
-      setQualifiedUsers(qualified);
-    } catch (error) {
-      console.error('Error fetching qualified users:', error);
-    }
-  };
+  }, [auth, db, router, fetchQualifiedUsers]);
 
   const handleBulkPayout = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAdmin || !tonConnectUI.wallet) return;
+    if (!isAdmin || !tonConnectUI || !tonConnectUI.wallet) return;
 
     const user = auth.currentUser;
     if (!user) return;
@@ -110,7 +109,7 @@ export default function AdminPage() {
 
   const handleIndividualPayout = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAdmin || !tonConnectUI.wallet || !selectedUser) return;
+    if (!isAdmin || !tonConnectUI || !tonConnectUI.wallet || !selectedUser) return;
 
     const user = auth.currentUser;
     if (!user) return;
@@ -141,7 +140,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-600 via-purple-600 to-indigo-700 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
           <p className="text-white mt-4">Loading admin panel...</p>
@@ -155,7 +154,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-600 via-purple-600 to-indigo-700">
+    <div className="min-h-screen">
       {/* African Pattern Background */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full"></div>
@@ -233,10 +232,10 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                disabled={!tonConnectUI.wallet}
+                disabled={!tonConnectUI || !tonConnectUI.wallet}
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                {tonConnectUI.wallet ? '🚀 Create Bulk Payout' : '⚠️ Connect Wallet First'}
+                {tonConnectUI && tonConnectUI.wallet ? '🚀 Create Bulk Payout' : '⚠️ Connect Wallet First'}
               </button>
             </form>
           </div>
@@ -281,10 +280,10 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                disabled={!tonConnectUI.wallet || !selectedUser}
+                disabled={!tonConnectUI || !tonConnectUI.wallet || !selectedUser}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-500 disabled:to-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                {tonConnectUI.wallet ? '💸 Send Individual Payment' : '⚠️ Connect Wallet First'}
+                {tonConnectUI && tonConnectUI.wallet ? '💸 Send Individual Payment' : '⚠️ Connect Wallet First'}
               </button>
             </form>
           </div>

@@ -103,7 +103,7 @@ export default function TapPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-[#1a1a1a] to-black text-white flex flex-col items-center justify-between p-4 overflow-hidden">
+    <div className="min-h-screen text-white flex flex-col items-center justify-between p-4 overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-[url('/african-pattern.svg')] opacity-5 z-0"></div>
       
       <div className="w-full max-w-md z-10">

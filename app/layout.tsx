@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
-import { Geist } from "geist/font/sans";
+import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import Link from "next/link";
 import { TonConnectProvider } from "./components/TonConnectProvider";
 
-const geistSans = Geist;
+const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export default function RootLayout({

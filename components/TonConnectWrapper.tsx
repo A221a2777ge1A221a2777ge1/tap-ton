@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 
 export function TonConnectWrapper() {
   const [mounted, setMounted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -17,22 +16,9 @@ export function TonConnectWrapper() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm">
-        Connection Error
-      </div>
-    );
-  }
-
   return (
     <div className="ton-connect-wrapper">
-      <TonConnectButton 
-        onError={(error) => {
-          console.error('TON Connect Error:', error);
-          setError(error.message);
-        }}
-      />
+      <TonConnectButton />
     </div>
   );
 }
