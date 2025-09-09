@@ -1,27 +1,9 @@
 {
   "hosting": {
-    "public": "out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
-  },
-  "storage": {
-    "rules": "storage.rules"
+    "source": ".",
+    "ignore": ["firebase.json", ".firebaserc", ".github/**"],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
   }
 }

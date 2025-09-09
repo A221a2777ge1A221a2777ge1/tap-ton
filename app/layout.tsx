@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "../styles/globals.css";
+import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 
