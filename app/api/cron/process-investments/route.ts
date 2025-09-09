@@ -1,4 +1,4 @@
-import { getFirestore, collection, query, where, getDocs, doc, writeBatch } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, doc, writeBatch, increment } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 
 // Simple interest rate for now
@@ -14,9 +14,13 @@ export async function GET(req: Request) {
         const batch = writeBatch(db);
 
         querySnapshot.forEach(document => {
-            const investment = document.data();
-            const createdAt = investment.createdAt.toDate(); // Convert firestore timestamp to date
+            const investment = document.data() as { amount: number; duration: number; userAddress: string; createdAt?: { toDate: () => Date } };
+            const createdAt = investment.createdAt?.toDate?.(); // Optional chaining in case field missing
             const now = new Date();
+
+            if (!createdAt) {
+                return; // skip malformed records
+            }
 
             const monthsPassed = (now.getFullYear() - createdAt.getFullYear()) * 12 + (now.getMonth() - createdAt.getMonth());
 
@@ -25,9 +29,10 @@ export async function GET(req: Request) {
                 const investmentRef = doc(db, 'investments', document.id);
 
                 const interest = investment.amount * investment.duration * INTEREST_RATE;
-                const newBalance = investment.amount + interest;
+                const payout = investment.amount + interest;
 
-                batch.update(userRef, { balance: newBalance });
+                // Add payout to user's balance atomically
+                batch.update(userRef, { balance: increment(payout) });
                 batch.update(investmentRef, { status: 'completed' });
             }
         });

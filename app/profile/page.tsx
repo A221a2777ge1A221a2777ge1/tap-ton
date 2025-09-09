@@ -1,13 +1,14 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0';
 
 interface Investment {
     id: string;
     amount: number;
     duration: number;
-    createdAt: any; // Firestore timestamp
+    createdAt: unknown; // Firestore timestamp
     status: string;
 }
 
@@ -31,7 +32,7 @@ export default function ProfilePage() {
       <h1 className="text-4xl font-bold mb-4">Profile</h1>
       {user && (
         <div className="flex flex-col items-center space-y-4">
-            <img src={user.picture} alt="Profile Picture" className="w-24 h-24 rounded-full" />
+            <Image src={user.picture || '/assets/avatar-placeholder.png'} alt="Profile Picture" className="rounded-full" width={96} height={96} />
             <p>{user.name}</p>
             <p>{user.email}</p>
         </div>

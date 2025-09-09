@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Briefcase, BarChart, Wallet, User, LogIn, LogOut } from 'lucide-react';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0';
 
 const navItems = [
   { href: '/tap', icon: Home, label: 'Tap' },
@@ -33,16 +33,16 @@ export default function BottomNav() {
             <User />
             <span className="text-xs">Profile</span>
           </Link>
-          <a href="/api/auth/logout" className="flex flex-col items-center text-gray-400">
+          <Link href="/api/auth/logout" className="flex flex-col items-center text-gray-400">
             <LogOut />
             <span className="text-xs">Logout</span>
-          </a>
+          </Link>
         </>
       ) : (
-        <a href="/api/auth/login" className="flex flex-col items-center text-gray-400">
+        <Link href="/api/auth/login" className="flex flex-col items-center text-gray-400">
           <LogIn />
           <span className="text-xs">Login</span>
-        </a>
+        </Link>
       )}
     </nav>
   );

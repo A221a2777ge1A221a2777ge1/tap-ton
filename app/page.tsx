@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 
-const InvestmentCard = ({ title, description, icon }) => (
+interface InvestmentCardProps {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+const InvestmentCard = ({ title, description, icon }: InvestmentCardProps) => (
   <div className="bg-gray-800 rounded-lg p-6 text-center">
     <div className="text-4xl mb-4">{icon}</div>
     <h3 className="text-xl font-bold mb-2 text-yellow-400">{title}</h3>
@@ -38,17 +44,17 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <InvestmentCard 
-            icon="ðE¸" 
+            icon="🏘️" 
             title="Real Estate" 
             description="Lagos mega-malls, Nairobi tech parks, Accra luxury apartments." 
           />
           <InvestmentCard 
-            icon="ð±" 
+            icon="🌱" 
             title="Agriculture" 
             description="Ghanaian cocoa farms, Ethiopian coffee plantations, Kenyan flower exports." 
           />
           <InvestmentCard 
-            icon="ð¡" 
+            icon="💡" 
             title="Technology" 
             description="Invest in African fintech, AI research, and renewable energy startups." 
           />

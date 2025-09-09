@@ -39,6 +39,15 @@ cp .env.example .env.local
 npm run dev
 ```
 
+### Notes on Auth0
+- This repo uses `@auth0/nextjs-auth0` v4. Import hooks from the root package:
+  - `import { useUser } from '@auth0/nextjs-auth0'`
+- The SDK no longer exposes `handleAuth` as in older versions. Implement API routes or middleware separately as needed.
+
+### Sentry
+- Sentry is enabled via `withSentryConfig` in `next.config.ts`.
+- For full initialization per Next.js 15, move init to instrumentation files if needed.
+
 ### Firebase Setup
 ```bash
 # Install Firebase CLI
