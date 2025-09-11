@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Briefcase, BarChart, Wallet, User, LogIn, LogOut } from 'lucide-react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const navItems = [
   { href: '/tap', icon: Home, label: 'Tap' },
