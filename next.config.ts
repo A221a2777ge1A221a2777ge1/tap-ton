@@ -1,24 +1,36 @@
-import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  // Do NOT use static export; we rely on API routes and dynamic rendering
-  webpack: (config) => {
-    // Avoid bundling Node built-ins on the client
-    config.resolve = config.resolve || {};
-    config.resolve.fallback = {
-      ...(config.resolve.fallback || {}),
-      fs: false,
-      net: false,
-      tls: false,
-    };
-    return config;
+  /* config options here */
+  output: 'export',
+  typescript: {
+    ignoreBuildErrors: true,
   },
-  transpilePackages: ["@tonconnect/ui-react"],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
-export default withSentryConfig(nextConfig, {
-  silent: true,
-  org: "tonup-t0iem",
-  project: "javascript-nextjs",
-});
+export default nextConfig;
