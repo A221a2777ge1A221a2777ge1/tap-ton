@@ -1,6 +1,7 @@
-import { initializeApp, getApps, type FirebaseOptions } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseOptions } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
+// Configure Firebase using public runtime env vars. These are not secret.
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -10,25 +11,7 @@ const firebaseConfig: FirebaseOptions = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-
-export const db = getFirestore(app);
-
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBPxgbabl4DnDIXJ7LC1dOpBnRUvWUPFQs",
-  authDomain: "tonup-t0iem.firebaseapp.com",
-  projectId: "tonup-t0iem",
-  storageBucket: "tonup-t0iem.appspot.com",
-  messagingSenderId: "681495947781",
-  appId: "1:681495947781:web:a77bdf658a5eb08cd74a6c"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export { app, auth, db };
+export { app, db };

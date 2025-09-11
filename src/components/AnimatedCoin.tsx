@@ -8,11 +8,10 @@ export default function AnimatedCoin() {
   const handleTap = () => {
     setIsTapped(true);
     setTimeout(() => setIsTapped(false), 200);
-    // Here you would also call the function to increment the balance
   };
 
   return (
-    <div 
+    <div
       className={`w-48 h-48 bg-yellow-400 rounded-full flex items-center justify-center text-black font-bold text-3xl cursor-pointer transition-transform duration-200 ${isTapped ? 'scale-90' : ''}`}
       onClick={handleTap}
     >
@@ -20,3 +19,4 @@ export default function AnimatedCoin() {
     </div>
   );
 }
+
