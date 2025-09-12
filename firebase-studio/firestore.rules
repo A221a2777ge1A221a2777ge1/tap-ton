@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function userRole(projectId) {
+      return request.auth.token.roles[projectId];
+    }
+
+    function hasRole(projectId, min) {
+      return (
+        (min == 'VIEWER' && (userRole(projectId) in ['VIEWER', 'EDITOR', 'ADMIN', 'OWNER'])) ||
+        (min == 'EDITOR' && (userRole(projectId) in ['EDITOR', 'ADMIN', 'OWNER'])) ||
+        (min == 'ADMIN' && (userRole(projectId) in ['ADMIN', 'OWNER'])) ||
+        (min == 'OWNER' && (userRole(projectId) == 'OWNER'))
+      );
+    }
+
+    match /projects/{projectId} {
+      allow read: if hasRole(projectId, 'VIEWER');
+      allow write: if hasRole(projectId, 'ADMIN');
+    }
+
+    match /projectMembers/{id} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if hasRole(request.resource.data.projectId, 'ADMIN');
+    }
+
+    match /auditLogs/{id} {
+      allow read: if resource.data.projectId in request.auth.token.roles;
+      allow write: if false; // server-only via Admin SDK
+    }
+
+    match /savedQueries/{id} {
+      allow read: if resource.data.projectId in request.auth.token.roles;
+      allow write: if hasRole(request.resource.data.projectId, 'EDITOR');
+    }
+
+    match /ruleSets/{id} {
+      allow read: if resource.data.projectId in request.auth.token.roles;
+      allow write: if hasRole(request.resource.data.projectId, 'ADMIN');
+    }
+  }
+}
+
