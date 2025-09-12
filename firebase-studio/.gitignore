@@ -1,0 +1,9 @@
+node_modules
+.next
+.turbo
+.env*
+.emulator-data
+/functions/lib
+/playwright-report
+/test-results
+
