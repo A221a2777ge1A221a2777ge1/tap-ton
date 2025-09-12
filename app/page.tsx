@@ -16,50 +16,28 @@ const InvestmentCard = ({ title, description, icon }: InvestmentCardProps) => (
   </div>
 );
 
-export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <nav className="flex justify-between items-center p-4 bg-gray-900">
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="text-lg font-bold">Evana Tycoon</Link>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="hover:text-yellow-400">Home</Link>
-          <Link href="/tap" className="hover:text-yellow-400">Tap</Link>
-          <Link href="/leaderboard" className="hover:text-yellow-400">Leaderboard</Link>
-        </div>
-      </nav>
-
-      <main className="flex flex-col items-center justify-center text-center p-8">
-        <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center text-4xl font-bold text-yellow-400 mb-4">
-          ET
-        </div>
-        <h1 className="text-5xl font-bold mb-2">Evana Tycoon</h1>
-        <p className="text-2xl text-green-400 mb-8">Build Your African Investment Empire</p>
-        <p className="max-w-2xl mb-12">
-          Tap to earn ET Coins and build your wealth through strategic investments in real
-          estate, agriculture, and technology across the African continent. Connect your TON
-          wallet to supercharge your progress!
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <InvestmentCard 
-            icon="🏘️" 
-            title="Real Estate" 
-            description="Lagos mega-malls, Nairobi tech parks, Accra luxury apartments." 
-          />
-          <InvestmentCard 
-            icon="🌱" 
-            title="Agriculture" 
-            description="Ghanaian cocoa farms, Ethiopian coffee plantations, Kenyan flower exports." 
-          />
-          <InvestmentCard 
-            icon="💡" 
-            title="Technology" 
-            description="Invest in African fintech, AI research, and renewable energy startups." 
-          />
-        </div>
-      </main>
-    </div>
-  );
+export default function Page() {
+	return (
+		<div className="space-y-4">
+			<h1 className="text-2xl font-semibold">Dashboard</h1>
+			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+				<div className="border rounded p-4">
+					<h2 className="font-medium mb-2">Project Health</h2>
+					<p className="text-sm text-muted-foreground">Connect to a project to see stats.</p>
+				</div>
+				<div className="border rounded p-4">
+					<h2 className="font-medium mb-2">Recent Activity</h2>
+					<p className="text-sm text-muted-foreground">Audit log entries appear here.</p>
+				</div>
+				<div className="border rounded p-4">
+					<h2 className="font-medium mb-2">Quick Links</h2>
+					<ul className="list-disc list-inside text-sm">
+						<li><a className="underline" href="/firestore">Open Firestore</a></li>
+						<li><a className="underline" href="/storage">Open Storage</a></li>
+						<li><a className="underline" href="/auth">Open Auth</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	);
 }
